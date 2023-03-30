@@ -1,21 +1,40 @@
-/* if(! fs.existsSync(userDatabasePath)) {
-    console.log('creando..')
-    let db = new Database(userDatabasePath);
-    const stmt = db.prepare('CREATE TABLE IF NOT EXISTS contacts (contact_id INTEGER PRIMARY KEY, first_name TEXT NOT NULL,last_name TEXT NOT NULL,email TEXT NOT NULL UNIQUE,phone TEXT NOT NULL UNIQUE);'
-    );
-    stmt.run();
-    const stmt2 = db.prepare("INSERT INTO contacts (contact_id, first_name, last_name, email, phone) VALUES (1,'Iván','Larios','aasu@','5534135423');")
-    stmt2.run();
-    const stmt3 = db.prepare('SELECT * FROM contacts;')
-    console.log(stmt3.all());
+import Database from 'better-sqlite3';
+import path from 'path';
+import fs from 'fs';
+import { dbInfo } from '../types/types';
+import { User } from '../models/user_model';
 
-} else {
-    console.log('consultando..')
-    let db = Database(userDatabasePath);
-    
-    const stmt2 = db.prepare("INSERT INTO contacts (contact_id, first_name, last_name, email, phone) VALUES (2,'Edgar','Cano','au@','555423');")
-    stmt2.run();
+const userDatabasePath :string = path.join(__dirname,'../database/');
 
-    const stmt3 = db.prepare('SELECT * FROM contacts;')
-    console.log(stmt3.all());
-} */
+export function createUserDb (identifier :string) : any { // Crea la base de datos del usuario
+    return new Database(userDatabasePath.concat(identifier).concat('_user.sqlite'));
+}
+
+export function createUserDataTable(identifier :string) :string { // Crea la tabla de datos del usuario
+    if(checkExistence(identifier)) {
+        const db = Database(userDatabasePath.concat(identifier).concat('_user.sqlite'));
+
+        db.prepare('CREATE TABLE IF NOT EXISTS user_tbl (identifier INTEGER PRIMARY KEY, firstname TEXT NOT NULL,lastname TEXT NOT NULL, type TEXT NOT NULL, points INTEGER NOT NULL, email TEXT NOT NULL, phone TEXT NOT NULL);').run();
+        return dbInfo.OK;
+    } else {
+        return dbInfo.ERROR;
+    }   
+}
+
+export function defineUserData (identifier : number, userData : User) {
+    if(checkExistence(identifier.toString())) {
+        const db = Database(userDatabasePath.concat(identifier.toString()).concat('_user.sqlite'));
+
+        db.prepare(`INSERT INTO user_tbl (identifier, firstname, lastname, type, points, email, phone) VALUES (${userData.identifier},${userData.firstname},${userData.lastname},${userData.userType},${userData.points},${userData.email},${userData.phone});`);
+
+
+        return dbInfo.OK;
+
+    } else {
+        return dbInfo.ERROR;
+    }
+}
+
+export function checkExistence(identifier:string) {
+    return fs.existsSync(userDatabasePath.concat(identifier).concat('_user.sqlite'));
+}
