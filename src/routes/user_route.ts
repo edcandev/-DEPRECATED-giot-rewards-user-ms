@@ -1,5 +1,6 @@
 import  express from 'express';
-import { defineUserData } from '../services/userdb_service'
+import { defineUserData } from '../services/userdb_service';
+import { getUserData } from '../services/userdb_service';
 import { User } from '../models/user_model';
 const router = express.Router();
 
@@ -7,7 +8,7 @@ router.get('/',(_req, res)=> {
     res.send('get user data')
 });
 
-router.post('/post/data',(_req, res) => {
+router.post('/data',(_req, res) => {
     //console.log(_req.body);
 
     const user : User = {
@@ -19,13 +20,17 @@ router.post('/post/data',(_req, res) => {
         points:_req.body.points,
         userType:_req.body.userType
     }
-
     console.log(user);
 
-    defineUserData(user.identifier,user);
+    defineUserData(user);
     
     res.sendStatus(201);
 });
 
+router.get('/data',(req,res) => {
+    const userIdentifier : number = req.body.identifier;
+    //getUserData(req.body.identifier);
+    res.send(getUserData(userIdentifier));
+});
 
 export default router;

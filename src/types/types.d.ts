@@ -1,15 +1,8 @@
 export type UserType = 'student' | 'professor';
 
-/* export interface User {
-    identifier: number,
-    firstname: string,
-    lastname: string,
-    userType: UserType,
-    points: number
-} */
 const enum dbInfo {
-    OK = 'OK',
-    ERROR = 'ERROR'
+    OK = 'Transacción completada',
+    ERROR = 'Error del servidor',
+    NO_DB = 'No existe la base de datos del usuario'
 }
-/* export default UserType;
-export default User; */
+

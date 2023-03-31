@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "ts-node-dev src/server.ts",
+    "build": "node build/server.js",
     "tsc": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
